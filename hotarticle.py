@@ -7,6 +7,7 @@ class hotarticle():
         self.hoturl = "https://pttweb.tw/hot-threads"
         self.newsurl = "https://pttweb.tw/news"
         self.newarticleurl = "https://pttweb.tw/newest-threads"
+        self.hotarticle_title = []
 
     def runhot(self):
         self.hotarticle_url = []
@@ -16,8 +17,10 @@ class hotarticle():
         results = soup.select("div.thread-item")
         for item in results:
             a_item = item.select_one("a")
-            href = 'https://pttweb.tw' + a_item.get('href')
-            self.hotarticle_url.append(href)
+            if a_item:
+                href = 'https://pttweb.tw' + a_item.get('href')
+                self.hotarticle_url.append(href)
+                self.hotarticle_title.append(a_item.text)
         string = ""
         for i in range(0 , len(self.hotarticle_url)):
             string = string + "\n" + self.hotarticle_url[i]
@@ -31,8 +34,10 @@ class hotarticle():
         results = soup.select("div.thread-item")
         for item in results:
             a_item = item.select_one("a")
-            href = 'https://pttweb.tw' + a_item.get('href')
-            self.newsarticle_url.append(href)
+            if a_item:
+                href = 'https://pttweb.tw' + a_item.get('href')
+                self.newsarticle_url.append(href)
+                self.hotarticle_title.append(a_item.text)
         string = ""
         for i in range(0 , len(self.newsarticle_url)):
             string = string + "\n" + self.newsarticle_url[i]
@@ -46,8 +51,10 @@ class hotarticle():
         results = soup.select("div.thread-item")
         for item in results:
             a_item = item.select_one("a")
-            href = 'https://pttweb.tw' + a_item.get('href')
-            self.article_url.append(href)
+            if a_item:
+                href = 'https://pttweb.tw' + a_item.get('href')
+                self.article_url.append(href)
+                self.hotarticle_title.append(a_item.text)
         string = ""
         for i in range(0 , len(self.article_url)):
             string = string + "\n" + self.article_url[i]

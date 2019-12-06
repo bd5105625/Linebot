@@ -24,6 +24,14 @@ class TocMachine(GraphMachine):
         text = event.message.text
         return text.lower() == "最新文章"
 
+    def is_going_to_state5(self, event , string):
+        text = event.message.text
+        return text.lower() == "最新文章"   #所選看板的最新文章
+
+    def is_going_to_state6(self, event , string):
+        text = event.message.text
+        return text.lower() == "熱門文章"   #所選看板的熱門文章
+
     def on_enter_state1(self, event , string):
         print("I'm entering state1" , string) 
         # self.gethot(event)
@@ -51,13 +59,30 @@ class TocMachine(GraphMachine):
     def on_exit_state4(self):
         print("Leaving state4")
 
+    def on_enter_state5(self, event , string):
+        print("I'm entering state5" , string)
+        # self.getarticle(event)
+
+    def on_exit_state5(self):
+        print("Leaving state5")
+
+    def on_enter_state6(self, event , string):
+        print("I'm entering state6" , string)
+        # self.getarticle(event)
+
+    def on_exit_state6(self):
+        print("Leaving state6")
+
     def getboard(self , event , string):    #從特定看板取得前五熱門文章
         reply_token = event.reply_token
         run = ptt(string)
         run.run()
         string = ""
-        for i in range(0 , 5):
-            string = string + run.article_hot_url[i] + "\n\n"
+        if run.article_hot_url != []:
+            for i in range(0 , 5):
+                string = string + run.article_title[i] + "\n" + run.article_hot_url[i] + "\n"
+        else:
+            string = "錯誤看板名稱，請重新點選\"選擇看板\""
         send_text_message(reply_token , string)
         print("back to user")
         self.go_back()
@@ -67,11 +92,11 @@ class TocMachine(GraphMachine):
         run = hotarticle()
         run.runhot()
         string1 = ""
-        string2 = ""
-        for i in range(0 , 5):
-            string1 = string1 + run.hotarticle_url[i] + "\n\n"
-        for i in range(5 , 10):
-            string2 = string2 + run.hotarticle_url[i] + "\n\n"
+        # string2 = ""
+        for i in range(0 , 10):
+            string1 = string1 + run.hotarticle_title[i] + "\n" + run.hotarticle_url[i] + "\n"
+        # for i in range(5 , 10):
+        #     string2 = string2 + run.hotarticle_url[i] + "\n\n"
         send_text_message(reply_token , string1)
         # send_text_message(reply_token , string2)
         print("back to user")        
@@ -82,8 +107,8 @@ class TocMachine(GraphMachine):
         run = hotarticle()
         run.runnews()
         string = ""
-        for i in range(0 , 5):
-            string = string + run.newsarticle_url[i] + "\n\n"
+        for i in range(0 , 10):
+            string = string + run.hotarticle_title[i] + "\n" + run.newsarticle_url[i] + "\n"
         send_text_message(reply_token , string)
         print("back to user")        
         self.go_back()
@@ -93,8 +118,8 @@ class TocMachine(GraphMachine):
         run = hotarticle()
         run.newarticle()
         string = ""
-        for i in range(0 , 5):
-            string = string + run.article_url[i] + "\n\n"
+        for i in range(0 , 10):
+            string = string + run.hotarticle_title[i] + "\n" + run.article_url[i] + "\n"
         send_text_message(reply_token , string)
         print("back to user")        
         self.go_back()

@@ -46,15 +46,19 @@
 # from ptt import *
 # run()
 
-# from ptt import *
-# run = ptt("tainan")
-# run.run()
-# string = ""
-# for i in range(0 , 5):
-#     # print(run.article_hot_url[i])
-#     string = string + run.article_hot_url[i] + "\n"
-# # print("\n" , string)
-from hotarticle import *
-run = hotarticle()
-run.newarticle()
-# run.runnews
+from ptt import *
+signal = ""
+run = ptt("beauty")
+run.run()
+string = ""
+if run.article_hot_url != []:
+    for i in range(0 , 5):
+        # print(run.article_hot_url[i])
+        string = string + run.article_hot_title[i] + "\n" + run.article_hot_url[i] + "\n"
+else:
+    print("Error")
+print("\n" , string)
+# from hotarticle import *
+# run = hotarticle()
+# run.newarticle()
+# # run.runnews

@@ -16,7 +16,7 @@ load_dotenv()
 
 buttons_template = TemplateSendMessage(
     alt_text='Buttons Template',
-    template=ButtonsTemplate( 
+    template=ButtonsTemplate(
         title='批踢踢熱門搜尋',
         text='選擇全站或是特定看板熱門文章',
         thumbnail_image_url='https://images.pexels.com/photos/2930115/pexels-photo-2930115.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
@@ -39,6 +39,25 @@ buttons_template = TemplateSendMessage(
                 label='最新文章',
                 # text='go to state2',
                 text='最新文章',
+            ),
+        ]   
+        )
+)
+
+button_intoboard = TemplateSendMessage(
+    alt_text='Buttons Template',
+    template=ButtonsTemplate(
+        title='看板內容'',
+        text='選擇此看板何種內容',
+        thumbnail_image_url='https://images.pexels.com/photos/2930115/pexels-photo-2930115.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+        actions=[
+            MessageTemplateAction(
+                label='最新文章',
+                text='最新文章'
+            ),
+            MessageTemplateAction(
+                label='熱門文章',
+                text='熱門文章',
             ),
         ]   
         )
@@ -72,8 +91,20 @@ machine = TocMachine(
             "conditions": "is_going_to_state4",
         },
         {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "state5",
+            "conditions": "is_going_to_state5",
+        },
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "state6",
+            "conditions": "is_going_to_state6",
+        },
+        {
             "trigger": "go_back", 
-            "source": ["state1", "state2" , "state3" , "state4"], 
+            "source": ["state1", "state2" , "state3" , "state4" , "state5" , "state6"], 
             "dest": "user", 
         },
     ],
@@ -166,7 +197,7 @@ def webhook_handler():
         else:
             response = machine.advance(event , event.message.text)
             if response == False:
-                send_text_message(event.reply_token, "請透過選單選取")
+                send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
         if machine.state == "state1":       #取得熱門
             machine.gethot(event)
         elif machine.state == "state2":     #取得新聞
