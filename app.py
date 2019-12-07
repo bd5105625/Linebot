@@ -7,9 +7,9 @@ from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 # from linebot.models import MessageEvent, TextMessage, TextSendMessage , TemplateSendMessage, ButtonsTemplate, 
 #                  PostbackAction, MessageAction, URIAction
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ButtonsTemplate, PostbackTemplateAction, MessageTemplateAction, URITemplateAction
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ButtonsTemplate, PostbackTemplateAction, MessageTemplateAction, URITemplateAction , ImageSendMessage
 from fsm import TocMachine
-from utils import send_text_message , set_button
+from utils import send_text_message , set_button , send_image
 # from ptt import *
 
 load_dotenv()
@@ -61,6 +61,11 @@ button_intoboard = TemplateSendMessage(
             ),
         ]   
         )
+)
+
+picture = ImageSendMessage(
+    original_content_url =  "https://imgur.com/aq9WZJy.jpg",
+    preview_image_url = "https://i.imgur.com/aq9WZJy.jpg"
 )
 
 machine = TocMachine(
@@ -170,6 +175,8 @@ def webhook_handler():
     except InvalidSignatureError:
         abort(400)
 
+
+
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
         if not isinstance(event, MessageEvent):
@@ -178,6 +185,10 @@ def webhook_handler():
             continue
         if not isinstance(event.message.text, str):
             continue
+        if event.message.text.lower() == "draw":    #傳送FSM圖片
+            # strr = "Here"
+            send_image(event.reply_token , picture)  
+            print("Here in image send")  
         print(f"\nFSM STATE: {machine.state}")
         print(f"REQUEST BODY: \n{body}")
         # if machine.state == "state1":       #取得熱門
@@ -210,7 +221,6 @@ def webhook_handler():
             response = machine.advance(event , event.message.text)
             if response == False:
                 send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
-
         if machine.state == "state3":
             try:
                 set_button(event.reply_token , button_intoboard)
@@ -220,22 +230,6 @@ def webhook_handler():
             response = machine.advance(event , event.message.text)
             if response == False:
                 send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
-        # response = machine.advance(event , event.message.text)
-        # if response == False:
-        #     send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
-        # if machine.state == "state3":     #取得看板
-        #     # board = event.message.text  #儲存所輸入的版的名稱，供第二個button使用
-        #     # print("board = " , board)
-        #     try:
-        #         set_button(event.reply_token , button_intoboard)
-        #     except LineBotApiError as e:
-        #         # error handle
-        #         raise e
-        #     # machine.getboard(event , event.message.text) 
-        # else:
-        #     response = machine.advance(event , event.message.text)
-        #     if response == False:
-        #         send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
 
 
  
@@ -245,12 +239,6 @@ def webhook_handler():
             machine.getnews(event) 
         elif machine.state == "state4":     #取得文章
             machine.getarticle(event) 
-        # elif machine.state == "state5":     #特定看板最新文章
-        #     board = event.message.text
-        #     machine.getboardnew(event , board) 
-        # elif machine.state == "state6":     #特定看板熱門文章
-        #     board = event.message.text
-        #     machine.getboard(event , board) 
 
             
         # if response == False:

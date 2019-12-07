@@ -15,7 +15,7 @@ class TocMachine(GraphMachine):
     def is_going_to_state2(self, event , string):
         text = event.message.text
         return text.lower() == "熱門新聞"
-
+ 
     def is_going_to_state3(self, event , string):
         text = event.message.text
         return text.lower() == "看板功能"
@@ -82,7 +82,7 @@ class TocMachine(GraphMachine):
             for i in range(0 , 8):
                 string = string + run.article_hot_title[i] + "\n" + run.article_hot_url[i] + "\n"
         else:
-            string = "錯誤看板名稱，請重新點選\"選擇看板\""
+            string = "錯誤看板名稱，請重新點選\"看板功能\"開始"
         send_text_message(reply_token , string)
         print("back to user")
         self.go_back()
