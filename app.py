@@ -24,7 +24,7 @@ buttons_template = TemplateSendMessage(
             MessageTemplateAction(
                 label='熱門文章',
                 text='熱門文章'
-            ),
+            ), 
             MessageTemplateAction(
                 label='熱門新聞',
                 # text='go to state2',
