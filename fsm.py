@@ -18,19 +18,19 @@ class TocMachine(GraphMachine):
 
     def is_going_to_state3(self, event , string):
         text = event.message.text
-        return text.lower() == "選擇看板"
+        return text.lower() == "看板功能"
 
     def is_going_to_state4(self, event , string):
         text = event.message.text
         return text.lower() == "最新文章"
-
+ 
     def is_going_to_state5(self, event , string):
         text = event.message.text
-        return text.lower() == "最新文章"   #所選看板的最新文章
+        return text.lower() == "看板最新文章"   #所選看板的最新文章
 
     def is_going_to_state6(self, event , string):
         text = event.message.text
-        return text.lower() == "熱門文章"   #所選看板的熱門文章
+        return text.lower() == "看板熱門文章"   #所選看板的熱門文章
 
     def on_enter_state1(self, event , string):
         print("I'm entering state1" , string) 
@@ -46,11 +46,11 @@ class TocMachine(GraphMachine):
     def on_exit_state2(self):
         print("Leaving state2")
 
-    def on_enter_state3(self, event , string):
-        print("I'm entering state3" , string)
+    # def on_enter_state3(self, event , string):
+    #     print("I'm entering state3" , string)
 
-    def on_exit_state3(self):
-        print("Leaving state3")
+    # def on_exit_state3(self):
+    #     print("Leaving state3")
 
     def on_enter_state4(self, event , string):
         print("I'm entering state4" , string)
@@ -79,8 +79,8 @@ class TocMachine(GraphMachine):
         run.run()
         string = ""
         if run.article_hot_url != []:
-            for i in range(0 , 5):
-                string = string + run.article_title[i] + "\n" + run.article_hot_url[i] + "\n"
+            for i in range(0 , 8):
+                string = string + run.article_hot_title[i] + "\n" + run.article_hot_url[i] + "\n"
         else:
             string = "錯誤看板名稱，請重新點選\"選擇看板\""
         send_text_message(reply_token , string)
@@ -123,3 +123,15 @@ class TocMachine(GraphMachine):
         send_text_message(reply_token , string)
         print("back to user")        
         self.go_back()
+
+    def getboardnew(self , event , string):
+        reply_token = event.reply_token
+        run = ptt(string)
+        run.boardnewarticle()
+        if run.boardurl != []:
+            for i in range(0 , len(run.boardurl)):
+                string = string + run.boardtitle[i] + "\n" + run.boardurl[i] + "\n"
+        send_text_message(reply_token , string)
+        print("back to user")
+        self.go_back()    
+

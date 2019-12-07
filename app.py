@@ -31,9 +31,9 @@ buttons_template = TemplateSendMessage(
                 text='熱門新聞',
             ),
             MessageTemplateAction(
-                label='選擇看板',
+                label='看板功能',
                 # text='go to state2',
-                text='選擇看板',
+                text='看板功能',
             ),
             MessageTemplateAction(
                 label='最新文章',
@@ -47,24 +47,24 @@ buttons_template = TemplateSendMessage(
 button_intoboard = TemplateSendMessage(
     alt_text='Buttons Template',
     template=ButtonsTemplate(
-        title='看板內容'',
-        text='選擇此看板何種內容',
+        title='看板內容',
+        text='選擇特定看板何種內容，點選完輸入看板名稱',
         thumbnail_image_url='https://images.pexels.com/photos/2930115/pexels-photo-2930115.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
         actions=[
             MessageTemplateAction(
-                label='最新文章',
-                text='最新文章'
+                label='看板最新文章',
+                text='看板最新文章'
             ),
             MessageTemplateAction(
-                label='熱門文章',
-                text='熱門文章',
+                label='看板熱門文章',
+                text='看板熱門文章',
             ),
         ]   
         )
 )
 
 machine = TocMachine(
-    states=["user", "state1", "state2" , "state3" , "state4"],  #熱門文章、熱門新聞、選擇看板、最新文章
+    states=["user", "state1", "state2" , "state3" , "state4" , "state5" , "state6"],  #熱門文章、熱門新聞、選擇看板、最新文章
     transitions=[
         {
             "trigger": "advance",
@@ -92,13 +92,13 @@ machine = TocMachine(
         },
         {
             "trigger": "advance",
-            "source": "user",
+            "source": "state3",
             "dest": "state5",
             "conditions": "is_going_to_state5",
         },
         {
             "trigger": "advance",
-            "source": "user",
+            "source": "state3",
             "dest": "state6",
             "conditions": "is_going_to_state6",
         },
@@ -190,20 +190,69 @@ def webhook_handler():
             except LineBotApiError as e:
                 # error handle
                 raise e
-        if machine.state == "state3":     #取得看板
-            machine.getboard(event , event.message.text) 
-        # elif machine.state == "state4":     #取得文章
-        #     machine.getarticle(event , event.message.text) 
+
+        if machine.state == "state5":     #特定看板最新文章
+            board = event.message.text
+            machine.getboardnew(event , board) 
+        elif machine.state == "state6":     #特定看板熱門文章
+            board = event.message.text
+            machine.getboard(event , board) 
+        # elif machine.state == "state3":
+        #     try:
+        #         set_button(event.reply_token , button_intoboard)
+        #     except LineBotApiError as e:
+        #         # error handle
+        #         raise e
+        #     response = machine.advance(event , event.message.text)
+        #     if response == False:
+        #         send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
         else:
             response = machine.advance(event , event.message.text)
             if response == False:
                 send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
+
+        if machine.state == "state3":
+            try:
+                set_button(event.reply_token , button_intoboard)
+            except LineBotApiError as e:
+                # error handle
+                raise e
+            response = machine.advance(event , event.message.text)
+            if response == False:
+                send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
+        # response = machine.advance(event , event.message.text)
+        # if response == False:
+        #     send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
+        # if machine.state == "state3":     #取得看板
+        #     # board = event.message.text  #儲存所輸入的版的名稱，供第二個button使用
+        #     # print("board = " , board)
+        #     try:
+        #         set_button(event.reply_token , button_intoboard)
+        #     except LineBotApiError as e:
+        #         # error handle
+        #         raise e
+        #     # machine.getboard(event , event.message.text) 
+        # else:
+        #     response = machine.advance(event , event.message.text)
+        #     if response == False:
+        #         send_text_message(event.reply_token, "請透過選單選取或是傳送Button呼叫選單")
+
+
+ 
         if machine.state == "state1":       #取得熱門
             machine.gethot(event)
         elif machine.state == "state2":     #取得新聞
             machine.getnews(event) 
         elif machine.state == "state4":     #取得文章
             machine.getarticle(event) 
+        # elif machine.state == "state5":     #特定看板最新文章
+        #     board = event.message.text
+        #     machine.getboardnew(event , board) 
+        # elif machine.state == "state6":     #特定看板熱門文章
+        #     board = event.message.text
+        #     machine.getboard(event , board) 
+
+            
         # if response == False:
         #     send_text_message(event.reply_token, "請透過選單選取")
     return "OK"

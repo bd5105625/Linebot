@@ -87,9 +87,9 @@ class ptt():
             temp.append(self.article_push[i])
         print(temp)
         self.article_push_list = []
-        for i in range(0 , 5):  #二維list 共五組 每組第一個為推文數 第二個為index位子(即第幾篇文章的index)
+        for i in range(0 , 8):  #二維list 共五組 每組第一個為推文數 第二個為index位子(即第幾篇文章的index)
             self.article_push_list.append([])    
-        for j in range(0 , 5):
+        for j in range(0 , 8):
             max = 0
             for i in range(0 , len(self.article_push)):
                 num = self.article_push[i]
@@ -108,7 +108,7 @@ class ptt():
         print(self.article_push_list)
 
         # self.article_hot_url = []    #存取前幾熱門的文章網址
-        for i in range(0 , 5):
+        for i in range(0 , 8):
             self.article_hot_title.append(self.article_title[self.article_push_list[i][1]])
             self.article_hot_url.append(self.article_url[self.article_push_list[i][1]])
             # print(self.article_url[self.article_push_list[i][1]])
@@ -118,34 +118,33 @@ class ptt():
         self.boardurl = []
         urllib3.disable_warnings()
         localurl = self.url
-        for page in range(1,3):     #讀取除了首頁後的幾頁
-            payload = {
-                'from' : localurl , 
-                'yes' : 'yes'
-            }
-            rs = requests.session()
-            r = rs.post('https://www.ptt.cc/ask/over18' , verify = False , data=payload)
-            r = rs.get(localurl , verify = False)
-            # print(r.text)
-            soup = BeautifulSoup(r.text,"html.parser")
-            # print(r.text)
-            check = soup.select('div.bbs-screen.bbs-content')
-            # print(check)
-            if check != [] or len(soup) == 1:   #確認是不是Error的網頁
-                # if check[0].text == "404 - Not Found.":
-                print("Not found")
-                return 
-            else:
-                result = soup.select('div.r-ent')
-                month = result[0].find('div' , 'date').text.split('/')[0]
-                day = result[0].find('div' , 'date').text.split('/')[1]
-                print(month , day)
-                for item in result:
-                    d = item.find('div' , 'date').text   #取得div下的text
-                    if(d.split('/')[0] == month and d.split('/')[1] == day):
-                        a_item = item.select('div.title')
-                        b_item = a_item[0].select_one('a')#.get('href')
-                        if b_item:
-                            c_item = 'https://www.ptt.cc' + b_item.get('href')
-                            self.boardurl.append(c_item)
-                            self.boardtitle.append(b_item.text)
+        payload = {
+            'from' : localurl , 
+            'yes' : 'yes'
+        }
+        rs = requests.session()
+        r = rs.post('https://www.ptt.cc/ask/over18' , verify = False , data=payload)
+        r = rs.get(localurl , verify = False)
+        # print(r.text)
+        soup = BeautifulSoup(r.text,"html.parser")
+        # print(r.text)
+        check = soup.select('div.bbs-screen.bbs-content')
+        # print(check)
+        if check != [] or len(soup) == 1:   #確認是不是Error的網頁
+            # if check[0].text == "404 - Not Found.":
+            print("Not found")
+            return 
+        else:
+            result = soup.select('div.r-ent')
+            month = result[0].find('div' , 'date').text.split('/')[0]
+            day = result[0].find('div' , 'date').text.split('/')[1]
+            # print(month , day)
+            for item in result:
+                d = item.find('div' , 'date').text   #取得div下的text
+                if(d.split('/')[0] == month and d.split('/')[1] == day):
+                    a_item = item.select('div.title')
+                    b_item = a_item[0].select_one('a')#.get('href')
+                    if b_item:
+                        c_item = 'https://www.ptt.cc' + b_item.get('href')
+                        self.boardurl.append(c_item)
+                        self.boardtitle.append(b_item.text)

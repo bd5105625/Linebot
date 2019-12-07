@@ -48,7 +48,7 @@
 
 from ptt import *
 signal = ""
-run = ptt("beauty")
+run = ptt("gossiping")
 run.run()
 string = ""
 if run.article_hot_url != []:
