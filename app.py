@@ -19,7 +19,7 @@ buttons_template = TemplateSendMessage(
     template=ButtonsTemplate(
         title='批踢踢熱門搜尋',
         text='選擇全站或是特定看板熱門文章',
-        thumbnail_image_url='https://images.pexels.com/photos/2930115/pexels-photo-2930115.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+        thumbnail_image_url='https://photo.sofun.tw/2016/02/PTT-Overload-Port-Logo.jpg',
         actions=[
             MessageTemplateAction(
                 label='熱門文章',
@@ -49,7 +49,7 @@ button_intoboard = TemplateSendMessage(
     template=ButtonsTemplate(
         title='看板內容',
         text='選擇特定看板何種內容，點選完輸入看板名稱',
-        thumbnail_image_url='https://images.pexels.com/photos/2930115/pexels-photo-2930115.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+        thumbnail_image_url='https://photo.sofun.tw/2016/02/PTT-Overload-Port-Logo.jpg',
         actions=[
             MessageTemplateAction(
                 label='看板最新文章',
