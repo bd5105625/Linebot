@@ -128,9 +128,12 @@ class TocMachine(GraphMachine):
         reply_token = event.reply_token
         run = ptt(string)
         run.boardnewarticle()
+        string = ""
         if run.boardurl != []:
             for i in range(0 , len(run.boardurl)):
                 string = string + run.boardtitle[i] + "\n" + run.boardurl[i] + "\n"
+        else:
+            string = "錯誤看板名稱，請重新點選\"看板功能\"開始"
         send_text_message(reply_token , string)
         print("back to user")
         self.go_back()    
